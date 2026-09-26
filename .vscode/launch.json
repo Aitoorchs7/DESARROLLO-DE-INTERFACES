@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Buscaminas",
+            "request": "launch",
+            "mainClass": "Buscaminas",
+            "projectName": "DESARROLLO-DE-INTERFACES_62e122e0"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
