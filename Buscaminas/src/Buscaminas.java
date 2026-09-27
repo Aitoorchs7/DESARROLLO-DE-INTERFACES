@@ -73,10 +73,6 @@ public class Buscaminas extends javax.swing.JFrame {
         gbc.gridwidth = 1;
         gbc.gridy = 1;
 
-        Puntuacion = new JLabel("Puntuacion: ");
-        gbc.gridx = 0;
-        panel.add(Puntuacion, gbc);
-
         Minas = new JLabel("Minas: " + contarMinas());
         gbc.gridx = 1;
         panel.add(Minas, gbc);
