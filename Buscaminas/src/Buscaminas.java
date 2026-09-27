@@ -4,10 +4,10 @@ import javax.swing.*;
 public class Buscaminas extends javax.swing.JFrame {
 
     // Componentes del panel superior que necesitaremos tocar despues
-    private JLabel Puntuacion;
     private JLabel Tiempo;
     private JButton reiniciar;
     private JLabel Minas;
+    private JLabel resultado;
 
     // Timer de la partida
     private Timer timer;
@@ -69,16 +69,16 @@ public class Buscaminas extends javax.swing.JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(Titulo, gbc);
 
-        // Fila 1: puntuacion | tiempo
+        // Fila 1: minas | tiempo
         gbc.gridwidth = 1;
         gbc.gridy = 1;
 
         Minas = new JLabel("Minas: " + contarMinas());
-        gbc.gridx = 1;
+        gbc.gridx = 0;
         panel.add(Minas, gbc);
 
         Tiempo = new JLabel("Tiempo: ");
-        gbc.gridx = 2;
+        gbc.gridx = 1;
         panel.add(Tiempo, gbc);
 
         return panel;
@@ -94,6 +94,10 @@ public class Buscaminas extends javax.swing.JFrame {
         reiniciar = new JButton("Nueva partida");
         panel.add(reiniciar, gbc);
         reiniciar.addActionListener(e -> reiniciarPartida());
+
+        resultado = new JLabel("Resultado: ");
+        gbc.gridx = 1;
+        panel.add(resultado, gbc);
 
         return panel;
     }
@@ -113,6 +117,7 @@ public class Buscaminas extends javax.swing.JFrame {
                 boton.addActionListener(e -> {
                     if (casillas[fila][columna] == 1) {
                         mostrarTodasLasMinas();
+                        mostrarResultado("Has perdido");
                         JOptionPane.showMessageDialog(this, "Has perdido.");
                         reiniciarPartida();
                     } else {
@@ -202,9 +207,9 @@ public class Buscaminas extends javax.swing.JFrame {
         if (fila < 0 || fila >= 10 || columna < 0 || columna >= 10)
             return; // fuera de rango, se sale del metodo
         if (reveladas[fila][columna])
-            return; // ya abierta ""
+            return; // ya abierta
         if (casillas[fila][columna] == 1)
-            return; // para no revelar una bomba """
+            return; // para no revelar una bomba
 
         reveladas[fila][columna] = true;
         int bombasAlrededor = contarBombas(fila, columna);
@@ -237,8 +242,13 @@ public class Buscaminas extends javax.swing.JFrame {
 
         timer.stop();
         mostrarTodasLasMinas();
+        mostrarResultado("Has ganado. Tiempo: " + segundos + " segundos");
         JOptionPane.showMessageDialog(this, "Has ganado. Tiempo: " + segundos + " segundos");
         reiniciarPartida();
+    }
+
+    private void mostrarResultado(String texto) {
+        resultado.setText("Resultado: " + texto);
     }
 
     private void mostrarTodasLasMinas() {
