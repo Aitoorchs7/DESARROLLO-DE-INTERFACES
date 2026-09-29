@@ -13,11 +13,20 @@ public class Buscaminas extends javax.swing.JFrame {
     private Timer timer;
     private int segundos = 0;
 
-    int[][] casillas = new int[10][10];
-    JButton[][] botones = new JButton[10][10];
-    boolean[][] reveladas = new boolean[10][10];
+    // Items de menu
+    private JMenuItem itemNuevaPartida;
+    private JMenuItem itemSalir;
+
+    // Tamaño del tablero
+    private int filas = 10;
+    private int columnas = 10;
+
+    int[][] casillas = new int[filas][columnas];
+    JButton[][] botones = new JButton[filas][columnas];
+    boolean[][] reveladas = new boolean[filas][columnas];
     // para que se sepa cuales estan reveladas y si no hay bombas alrededor de
     // las reveladas se descubran tambien
+    private JPanel tablero = panelTablero();
 
     public Buscaminas() {
         setTitle("Buscaminas de Aitor");
@@ -25,31 +34,33 @@ public class Buscaminas extends javax.swing.JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // Barra de menu
+        setJMenuBar(crearMenu());
+
         // Contenedor de arriba
         setLayout(new GridBagLayout());
-        GridBagConstraints gbcPrincipal = new GridBagConstraints();
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        gbcPrincipal.gridx = 0;
-        gbcPrincipal.weightx = 1;
-        gbcPrincipal.insets = new Insets(15, 10, 15, 10);
+        gbc.gridx = 0;
+        gbc.weightx = 1;
+        gbc.insets = new Insets(15, 10, 15, 10);
 
-        gbcPrincipal.gridy = 0;
-        gbcPrincipal.weighty = 0;
-        gbcPrincipal.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridy = 0;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         JPanel superior = panelSuperior();
-        add(superior, gbcPrincipal);
+        add(superior, gbc);
 
-        gbcPrincipal.gridy = 1;
-        gbcPrincipal.weighty = 1;
-        gbcPrincipal.fill = GridBagConstraints.BOTH;
-        JPanel tablero = panelInferior();
-        add(tablero, gbcPrincipal);
+        gbc.gridy = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(tablero, gbc);
 
-        gbcPrincipal.gridy = 2;
-        gbcPrincipal.weighty = 0;
-        gbcPrincipal.fill = GridBagConstraints.HORIZONTAL;
-        JPanel inferior = panelBotonNuevaPartida();
-        add(inferior, gbcPrincipal);
+        gbc.gridy = 2;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        JPanel inferior = panelInferior();
+        add(inferior, gbc);
 
         crearCasillas(casillas);
         Minas.setText("Minas: " + contarMinas());
@@ -69,7 +80,7 @@ public class Buscaminas extends javax.swing.JFrame {
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(Titulo, gbc);
 
-        // Fila 1: minas | tiempo
+        // Fila 1: minas | tiempo | menu
         gbc.gridwidth = 1;
         gbc.gridy = 1;
 
@@ -84,7 +95,7 @@ public class Buscaminas extends javax.swing.JFrame {
         return panel;
     }
 
-    private JPanel panelBotonNuevaPartida() {
+    private JPanel panelInferior() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
@@ -102,12 +113,12 @@ public class Buscaminas extends javax.swing.JFrame {
         return panel;
     }
 
-    private JPanel panelInferior() {
+    private JPanel panelTablero() {
         JPanel panel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
                 JButton boton = new JButton();
                 boton.setPreferredSize(new Dimension(40, 40));
                 boton.setMargin(new Insets(0, 0, 0, 0));
@@ -173,8 +184,8 @@ public class Buscaminas extends javax.swing.JFrame {
         crearCasillas(casillas);
         Minas.setText("Minas: " + contarMinas());
         // Resetear los botones y las casillas reveladas
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
                 botones[i][j].setText("");
                 botones[i][j].setEnabled(true);
                 botones[i][j].setOpaque(false);
@@ -191,7 +202,7 @@ public class Buscaminas extends javax.swing.JFrame {
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 int f = fila + i, c = columna + j;
-                if (f >= 0 && f < 10 && c >= 0 && c < 10 && casillas[f][c] == 1) {
+                if (f >= 0 && f < filas && c >= 0 && c < columnas && casillas[f][c] == 1) {
                     contador++;
                 }
             }
@@ -204,7 +215,7 @@ public class Buscaminas extends javax.swing.JFrame {
     }
 
     private void revelarCasilla(int fila, int columna) {
-        if (fila < 0 || fila >= 10 || columna < 0 || columna >= 10)
+        if (fila < 0 || fila >= filas || columna < 0 || columna >= columnas)
             return; // fuera de rango, se sale del metodo
         if (reveladas[fila][columna])
             return; // ya abierta
@@ -231,8 +242,8 @@ public class Buscaminas extends javax.swing.JFrame {
     }
 
     private void comprobarVictoria() {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
                 // si queda alguna casilla sin bomba y sin revelar, todavia no se ha ganado
                 if (casillas[i][j] == 0 && !reveladas[i][j]) {
                     return;
@@ -252,8 +263,8 @@ public class Buscaminas extends javax.swing.JFrame {
     }
 
     private void mostrarTodasLasMinas() {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
                 if (casillas[i][j] == 1) {
                     botones[i][j].setText("💣");
                     botones[i][j].setEnabled(false);
@@ -266,8 +277,8 @@ public class Buscaminas extends javax.swing.JFrame {
 
     private int contarMinas() {
         int contador = 0;
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < filas; i++) {
+            for (int j = 0; j < columnas; j++) {
                 if (casillas[i][j] == 1) {
                     contador++;
                 }
@@ -276,10 +287,73 @@ public class Buscaminas extends javax.swing.JFrame {
         return contador;
     }
 
+    private JMenuBar crearMenu() {
+
+        JMenuBar barra = new JMenuBar();
+
+        JMenu menuPartida = new JMenu("Partida");
+        JMenu menuAyuda = new JMenu("Ayuda");
+
+        itemNuevaPartida = new JMenuItem("Nueva partida");
+        itemNuevaPartida.addActionListener(e -> reiniciarPartida());
+
+        itemSalir = new JMenuItem("Salir");
+        itemSalir.addActionListener(e -> System.exit(0));
+
+        JMenuItem itemAcerca = new JMenuItem("Acerca de");
+        itemAcerca.addActionListener(e -> JOptionPane.showMessageDialog(this, "Buscaminas creado por Aitor Chicano"));
+
+        JMenuItem itemInstrucciones = new JMenuItem("Instrucciones");
+        itemInstrucciones.addActionListener(e -> {
+            Instrucciones instrucciones = new Instrucciones();
+        });
+
+        menuPartida.add(itemNuevaPartida);
+        menuPartida.addSeparator();
+        menuPartida.add(itemSalir);
+
+        menuAyuda.add(itemAcerca);
+        menuAyuda.addSeparator();
+        menuAyuda.add(itemInstrucciones);
+
+        barra.add(menuPartida);
+        barra.add(menuAyuda);
+
+        return barra;
+
+    }
+
+    private void cambiarTamano(int n) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+
+        filas = n;
+        columnas = n;
+
+        casillas = new int[n][n];
+        botones = new JButton[n][n];
+        reveladas = new boolean[n][n];
+
+        remove(tablero);
+        tablero = panelTablero();
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 1;
+        gbc.weighty = 1;
+        gbc.fill = GridBagConstraints.BOTH;
+        add(tablero, gbc);
+
+        revalidate();
+        repaint();
+        reiniciarPartida();
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             Buscaminas ventana = new Buscaminas();
             ventana.setVisible(true);
         });
     }
+
 }

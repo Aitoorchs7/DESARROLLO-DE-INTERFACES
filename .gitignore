@@ -1,0 +1,6 @@
+# Videos y documentos de clase (pesados, no van al repositorio)
+/videos y documentos/
+
+# Archivos compilados
+*.class
+out/
