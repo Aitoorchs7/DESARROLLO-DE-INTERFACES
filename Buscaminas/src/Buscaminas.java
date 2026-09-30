@@ -9,6 +9,8 @@ public class Buscaminas extends javax.swing.JFrame {
     private JLabel Minas;
     private JLabel resultado;
 
+    private JComboBox<String> dificultad;
+
     // Timer de la partida
     private Timer timer;
     private int segundos = 0;
@@ -20,6 +22,7 @@ public class Buscaminas extends javax.swing.JFrame {
     // Tamaño del tablero
     private int filas = 10;
     private int columnas = 10;
+    private int numMinas = 10;
 
     int[][] casillas = new int[filas][columnas];
     JButton[][] botones = new JButton[filas][columnas];
@@ -62,7 +65,7 @@ public class Buscaminas extends javax.swing.JFrame {
         JPanel inferior = panelInferior();
         add(inferior, gbc);
 
-        crearCasillas(casillas);
+        crearCasillas(casillas, numMinas);
         Minas.setText("Minas: " + contarMinas());
         iniciarTimer();
     }
@@ -91,6 +94,15 @@ public class Buscaminas extends javax.swing.JFrame {
         Tiempo = new JLabel("Tiempo: ");
         gbc.gridx = 1;
         panel.add(Tiempo, gbc);
+
+        dificultad = new JComboBox<>(new String[] { "Facil", "Medio", "Dificil" });
+        gbc.gridx = 2;
+        panel.add(dificultad, gbc);
+
+        dificultad.addActionListener(e -> {
+            numMinas = calcularMinas(filas);
+            reiniciarPartida();
+        });
 
         return panel;
     }
@@ -155,8 +167,8 @@ public class Buscaminas extends javax.swing.JFrame {
         timer.start();
     }
 
-    private void crearCasillas(int[][] casillas) {
-        int numBombas = 10;
+    private void crearCasillas(int[][] casillas, int numMinas) {
+        int numBombas = numMinas;
 
         for (int i = 0; i < casillas.length; i++) {
             for (int j = 0; j < casillas[i].length; j++) {
@@ -181,7 +193,7 @@ public class Buscaminas extends javax.swing.JFrame {
         segundos = 0;
         Tiempo.setText("Tiempo: 0");
         // Crear casillas nuevas
-        crearCasillas(casillas);
+        crearCasillas(casillas, numMinas);
         Minas.setText("Minas: " + contarMinas());
         // Resetear los botones y las casillas reveladas
         for (int i = 0; i < filas; i++) {
@@ -293,6 +305,7 @@ public class Buscaminas extends javax.swing.JFrame {
 
         JMenu menuPartida = new JMenu("Partida");
         JMenu menuAyuda = new JMenu("Ayuda");
+        JMenu menuTamano = new JMenu("Tamaño");
 
         itemNuevaPartida = new JMenuItem("Nueva partida");
         itemNuevaPartida.addActionListener(e -> reiniciarPartida());
@@ -306,7 +319,65 @@ public class Buscaminas extends javax.swing.JFrame {
         JMenuItem itemInstrucciones = new JMenuItem("Instrucciones");
         itemInstrucciones.addActionListener(e -> {
             Instrucciones instrucciones = new Instrucciones();
+            instrucciones.setVisible(true);
+            instrucciones.setLocationRelativeTo(this);
         });
+        JMenuItem personalizado = new JMenuItem("Personalizado");
+        personalizado.addActionListener(e -> {
+            String texto = JOptionPane.showInputDialog(this, "Introduce el numero de filas y columnas (5-15)");
+            if (texto == null) {
+                return; // ha pulsado Cancelar
+            }
+            String texto2 = JOptionPane.showInputDialog(this, "Introduce el numero de minas");
+            if (texto2 == null) {
+                return;
+            }
+            try {
+                int tamano = Integer.parseInt(texto.trim());
+                int minas = Integer.parseInt(texto2.trim());
+                if (tamano < 5 || tamano > 15) {
+                    JOptionPane.showMessageDialog(this, "El tamaño tiene que estar entre 5 y 15");
+                } else if (minas < 1 || minas >= tamano * tamano) {
+                    JOptionPane.showMessageDialog(this,
+                            "Las minas tienen que ser al menos 1 y menos que el numero de casillas");
+                } else {
+                    // solo se guarda si todo es valido
+                    numMinas = minas;
+                    cambiarTamano(tamano);
+                }
+            } catch (NumberFormatException nfe) {
+                JOptionPane.showMessageDialog(this, "Introduce un numero valido");
+            }
+        });
+
+        JRadioButtonMenuItem Peque = new JRadioButtonMenuItem("Pequeño");
+        JRadioButtonMenuItem Medio = new JRadioButtonMenuItem("Medio");
+        Medio.setSelected(true);
+        JRadioButtonMenuItem Grande = new JRadioButtonMenuItem("Grande");
+
+        // al elegir un tamaño fijo se vuelve a las 10 minas por defecto
+        Peque.addActionListener(e -> {
+            numMinas = calcularMinas(5);
+            cambiarTamano(5);
+        });
+        Medio.addActionListener(e -> {
+            numMinas = calcularMinas(10);
+            cambiarTamano(10);
+        });
+        Grande.addActionListener(e -> {
+            numMinas = calcularMinas(15);
+            cambiarTamano(15);
+        });
+
+        ButtonGroup grupo = new ButtonGroup();
+        grupo.add(Peque);
+        grupo.add(Medio);
+        grupo.add(Grande);
+
+        menuTamano.add(Peque);
+        menuTamano.add(Medio);
+        menuTamano.add(Grande);
+        menuTamano.add(personalizado);
 
         menuPartida.add(itemNuevaPartida);
         menuPartida.addSeparator();
@@ -317,6 +388,7 @@ public class Buscaminas extends javax.swing.JFrame {
         menuAyuda.add(itemInstrucciones);
 
         barra.add(menuPartida);
+        barra.add(menuTamano);
         barra.add(menuAyuda);
 
         return barra;
@@ -347,6 +419,13 @@ public class Buscaminas extends javax.swing.JFrame {
         revalidate();
         repaint();
         reiniciarPartida();
+    }
+
+    private int calcularMinas(int lado) {
+        double[] porcentajes = { 0.10, 0.15, 0.20 };
+        // como los tableros son cuadrados se le mete solo lado y no fila
+        // Y se devuelve un 20% del tablero, para poner las minas
+        return Math.max(1, (int) (lado * lado * porcentajes[dificultad.getSelectedIndex()]));
     }
 
     public static void main(String[] args) {
