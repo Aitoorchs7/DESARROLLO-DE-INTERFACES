@@ -10,6 +10,7 @@ public class Buscaminas extends javax.swing.JFrame {
     private JLabel resultado;
 
     private JComboBox<String> dificultad;
+    private JButton aplicarDificultad;
 
     // Timer de la partida
     private Timer timer;
@@ -34,6 +35,7 @@ public class Buscaminas extends javax.swing.JFrame {
     public Buscaminas() {
         setTitle("Buscaminas de Aitor");
         setSize(1200, 1000);
+        setMinimumSize(new Dimension(500, 500));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
@@ -75,15 +77,15 @@ public class Buscaminas extends javax.swing.JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 10, 5, 10);
 
-        // Fila 0: titulo, ocupando las 3 columnas de la fila de abajo
+        // Fila 0: titulo, ocupando las 4 columnas de la fila de abajo
         JLabel Titulo = new JLabel("Buscaminas");
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbc.gridwidth = 3;
+        gbc.gridwidth = 4;
         gbc.anchor = GridBagConstraints.CENTER;
         panel.add(Titulo, gbc);
 
-        // Fila 1: minas | tiempo | menu
+        // Fila 1: minas | tiempo | dificultad | aplicar
         gbc.gridwidth = 1;
         gbc.gridy = 1;
 
@@ -99,7 +101,13 @@ public class Buscaminas extends javax.swing.JFrame {
         gbc.gridx = 2;
         panel.add(dificultad, gbc);
 
-        dificultad.addActionListener(e -> {
+        // La dificultad elegida en el combo no se aplica sola: hace falta
+        // pulsar este boton para que la partida se reinicie con ella
+        aplicarDificultad = new JButton("Aplicar dificultad");
+        gbc.gridx = 3;
+        panel.add(aplicarDificultad, gbc);
+
+        aplicarDificultad.addActionListener(e -> {
             numMinas = calcularMinas(filas);
             reiniciarPartida();
         });
@@ -416,6 +424,12 @@ public class Buscaminas extends javax.swing.JFrame {
         gbc.fill = GridBagConstraints.BOTH;
         add(tablero, gbc);
 
+        // Si no se vuelve a ajustar el tamaño de la ventana al nuevo tablero,
+        // al pasar a un tablero mas grande que el hueco que ocupaba el anterior
+        // GridBagLayout encoge las casillas para que quepan (se "minimizan") y
+        // los clics posteriores quedan descuadrados con la casilla pulsada.
+        pack();
+        setLocationRelativeTo(null);
         revalidate();
         repaint();
         reiniciarPartida();
