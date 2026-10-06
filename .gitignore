@@ -4,3 +4,6 @@
 # Archivos compilados
 *.class
 out/
+
+# Configuracion del editor
+.vscode/
