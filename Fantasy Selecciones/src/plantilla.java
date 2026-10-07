@@ -1,3 +1,3 @@
-public class plantilla {
-    
+public class Plantilla {
+
 }
