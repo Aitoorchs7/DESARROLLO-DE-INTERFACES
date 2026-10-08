@@ -1,6 +1,17 @@
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Image;
 import java.net.URL;
-import javax.swing.*;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 /** Pantalla 1: el usuario escribe el nombre de su equipo. */
 public class Inicio extends JFrame {
@@ -42,11 +53,11 @@ public class Inicio extends JFrame {
     }
 
     /**
-     * Carga /imagenes/logo.jpg del proyecto y lo escala al alto indicado (el logo
+     * Carga /imagenes/app/logo.jpg del proyecto y lo escala al alto indicado (el logo
      * es vertical).
      */
     private JLabel crearLogo(int alto) {
-        URL url = getClass().getResource("/imagenes/logo.jpg");
+        URL url = getClass().getResource("/imagenes/app/logo.jpg");
         if (url == null) {
             JLabel sinLogo = new JLabel("(logo no encontrado)");
             sinLogo.setForeground(Color.LIGHT_GRAY);

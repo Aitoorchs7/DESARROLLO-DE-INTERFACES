@@ -12,5 +12,7 @@ public class Tienda extends JFrame {
         setSize(920, 700);
         setResizable(false);
         setLocationRelativeTo(null);
+
+        
     }
 }
