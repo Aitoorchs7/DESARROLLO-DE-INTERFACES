@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.escalandoimagenes;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -29,26 +28,26 @@ public class Ventana extends javax.swing.JFrame {
 
     private JLabel etiquetaImagen;
     private Image imagenOriginal;
+
     /**
      * Creates new form Ventana
      */
     public Ventana() {
-        
+
         setTitle("Imagen redimensionable");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Cargamos la imagen desde el proyecto
-        ImageIcon icono = new ImageIcon(
-                getClass().getResource("/asterix.png")
-        );
+        ImageIcon icono = new ImageIcon("pruebas/asterix.png");
 
         imagenOriginal = icono.getImage();
 
         etiquetaImagen = new JLabel();
         etiquetaImagen.setHorizontalAlignment(JLabel.CENTER);
         etiquetaImagen.setVerticalAlignment(JLabel.CENTER);
+        etiquetaImagen.setMinimumSize(new Dimension(1, 1));
 
         // Panel con GridBagLayout
         JPanel panel = new JPanel(new GridBagLayout());
@@ -58,7 +57,7 @@ public class Ventana extends javax.swing.JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        gbc.weightx = 1;
+        gbc.weightx = 0.3;
         gbc.weighty = 1;
 
         gbc.fill = GridBagConstraints.BOTH;
@@ -85,8 +84,8 @@ public class Ventana extends javax.swing.JFrame {
         // Creamos el contenedor de pestañas
         gbc.gridx = 1;
         gbc.gridy = 0;
-        //gbc.fill = GridBagConstraints.NONE;
-        gbc.anchor = GridBagConstraints.NORTHWEST;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.SOUTHEAST;
         JTabbedPane pestañas = new JTabbedPane();
 
         // Primera pestaña
@@ -107,26 +106,28 @@ public class Ventana extends javax.swing.JFrame {
         pestañas.addTab("Alumnos", panelAlumnos);
         pestañas.addTab("Configuración", panelConfiguracion);
 
+        gbc.weightx = 0.7;
+        gbc.gridheight = 2;
         panel.add(pestañas, gbc);
+        gbc.gridwidth = 1;
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbc.weightx = 0;
+        gbc.weightx = 0.7;
         gbc.weighty = 0;
 
         gbc.fill = GridBagConstraints.NONE;
         gbc.anchor = GridBagConstraints.CENTER;
 
         JSpinner spinner = new JSpinner(
-                new SpinnerNumberModel(1, 1, 10, 1)
-        );
+                new SpinnerNumberModel(1, 1, 10, 1));
         panel.add(spinner, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
-        gbc.weightx = 1;
-        gbc.weighty = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
         gbc.fill = GridBagConstraints.BOTH;
         gbc.anchor = GridBagConstraints.CENTER;
 
@@ -152,37 +153,35 @@ public class Ventana extends javax.swing.JFrame {
 
         // Zona desplazable
         JScrollPane scroll = new JScrollPane(contenido);
-        //scroll.setPreferredSize(new Dimension(400, 280));
+        // scroll.setPreferredSize(new Dimension(400, 280));
 
         panel.add(scroll, gbc);
         add(panel);
 
-        
-
-        //initComponents();
+        // initComponents();
     }
-    
-    
-    
+
     private void redimensionarImagen() {
 
-        /*int ancho = etiquetaImagen.getWidth();
-        int alto = etiquetaImagen.getHeight();
+        /*
+         * int ancho = etiquetaImagen.getWidth();
+         * int alto = etiquetaImagen.getHeight();
+         *
+         * if (ancho <= 0 || alto <= 0) {
+         * return;
+         * }
+         *
+         * Image imagenRedimensionada = imagenOriginal.getScaledInstance(
+         * ancho,
+         * alto,
+         * Image.SCALE_SMOOTH
+         * );
+         *
+         * etiquetaImagen.setIcon(
+         * new ImageIcon(imagenRedimensionada)
+         * );
+         */
 
-        if (ancho <= 0 || alto <= 0) {
-            return;
-        }
-
-        Image imagenRedimensionada = imagenOriginal.getScaledInstance(
-                ancho,
-                alto,
-                Image.SCALE_SMOOTH
-        );
-
-        etiquetaImagen.setIcon(
-                new ImageIcon(imagenRedimensionada)
-        ); */
-        
         int anchoDisponible = etiquetaImagen.getWidth();
         int altoDisponible = etiquetaImagen.getHeight();
 
@@ -195,8 +194,7 @@ public class Ventana extends javax.swing.JFrame {
 
         double proporcion = Math.min(
                 (double) anchoDisponible / anchoOriginal,
-                (double) altoDisponible / altoOriginal
-        );
+                (double) altoDisponible / altoOriginal);
 
         int nuevoAncho = (int) (anchoOriginal * proporcion);
         int nuevoAlto = (int) (altoOriginal * proporcion);
@@ -204,18 +202,12 @@ public class Ventana extends javax.swing.JFrame {
         Image imagenRedimensionada = imagenOriginal.getScaledInstance(
                 nuevoAncho,
                 nuevoAlto,
-                Image.SCALE_SMOOTH
-        );
+                Image.SCALE_SMOOTH);
 
         etiquetaImagen.setIcon(
-                new ImageIcon(imagenRedimensionada)
-        );
-        
+                new ImageIcon(imagenRedimensionada));
+
     }
-    
-    
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -223,7 +215,8 @@ public class Ventana extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated
+    // Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -231,13 +224,11 @@ public class Ventana extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 400, Short.MAX_VALUE));
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 300, Short.MAX_VALUE));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -247,9 +238,13 @@ public class Ventana extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -267,7 +262,7 @@ public class Ventana extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Ventana.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
