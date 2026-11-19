@@ -1,8 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.function.Consumer;
 
 // VENTANA PRINCIPAL: contiene el escenario y los botones de control.
 // No se usa el teclado: todo se maneja con botones.
@@ -35,10 +32,10 @@ public class Juego extends JFrame {
     private JPanel crearPanelFlechas() {
         JPanel panel = new JPanel(new FlowLayout());
 
-        panel.add(crearBotonDireccion("←", escenario::pulsarIzquierda));
-        panel.add(crearBotonDireccion("↑", escenario::pulsarArriba));
-        panel.add(crearBotonDireccion("↓", escenario::pulsarAbajo));
-        panel.add(crearBotonDireccion("→", escenario::pulsarDerecha));
+        panel.add(new BotonIzquierda(escenario));
+        panel.add(new BotonArriba(escenario));
+        panel.add(new BotonAbajo(escenario));
+        panel.add(new BotonDerecha(escenario));
 
         return panel;
     }
@@ -60,28 +57,6 @@ public class Juego extends JFrame {
         panel.add(reiniciar);
 
         return panel;
-    }
-
-    // Boton de direccion: avisa al escenario al pulsarlo (true) y al soltarlo (false)
-    // para que el jugador siga moviendose mientras se mantiene apretado.
-    private JButton crearBotonDireccion(String texto, Consumer<Boolean> accion) {
-        JButton boton = new JButton(texto);
-        boton.setFont(new Font("Arial", Font.BOLD, 18));
-        boton.setPreferredSize(new Dimension(60, 35));
-
-        boton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                accion.accept(true);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                accion.accept(false);
-            }
-        });
-
-        return boton;
     }
 
     public static void main(String[] args) {
